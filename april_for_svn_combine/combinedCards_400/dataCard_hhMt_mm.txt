@@ -1,0 +1,40 @@
+Combination of CRDY=copy_dataCard_CRDY_hhMt.txt  SR=copy_dataCard_SR_hhMt.txt  CRTT=copy_dataCard_CRTT_hhMt.txt
+imax 3 number of bins
+jmax 6 number of processes minus 1
+kmax 17 number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *     CRDY  hhMt_mm_CRDY.input.root mm_CRDY/$PROCESS mm_CRDY/$PROCESS_$SYSTEMATIC
+shapes *     CRTT  hhMt_mm_CRTT.input.root mm_CRTT/$PROCESS mm_CRTT/$PROCESS_$SYSTEMATIC
+shapes *     SR    hhMt_mm_SR.input.root mm_SR/$PROCESS mm_SR/$PROCESS_$SYSTEMATIC
+----------------------------------------------------------------------------------------------------------------------------------
+bin          CRDY         SR           CRTT       
+observation  11260.0      1490.0       4507.0     
+----------------------------------------------------------------------------------------------------------------------------------
+bin                                          CRDY         CRDY         CRDY         CRDY         CRDY         CRDY         CRDY         SR           SR           SR           SR           SR           SR           SR           CRTT         CRTT         CRTT         CRTT         CRTT         CRTT         CRTT       
+process                                      signal_hzz   signal_hww   ZH           TT           ST           VV           DY           signal_hzz   signal_hww   ZH           TT           ST           VV           DY           signal_hzz   signal_hww   ZH           TT           ST           VV           DY         
+process                                      -1           0            1            2            3            4            5            -1           0            1            2            3            4            5            -1           0            1            2            3            4            5          
+rate                                         0.1800       0.0400       9.2200       5532.3800    155.1500     142.0800     4103.8100    0.5400       0.1300       19.8600      372.8300     8.4600       41.2000      762.9900     0.0000       0.0000       0.6300       4690.2400    144.6700     10.0300      61.9100    
+----------------------------------------------------------------------------------------------------------------------------------
+CMS_btag_heavy          shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_btag_light          shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_eff_m_ID            shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_eff_m_ISO           shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_eff_m_tracker       shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_eff_m_trigger       shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_eff_met_UnclusteredEn   lnN              1.03         1.03         1.03         -            1.03         1.03         -            1.03         1.03         1.03         -            1.03         1.03         -            1.03         1.03         1.03         -            1.03         1.03         -          
+CMS_pu                  lnN                  1.06         1.06         1.06         -            1.06         1.06         -            1.06         1.06         1.06         -            1.06         1.06         -            1.06         1.06         1.06         -            1.06         1.06         -          
+CMS_res_j               shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+CMS_scale_j             shape                1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0          1.0        
+QCDscale_VH             lnN                  -            -            0.969/1.038  -            -            -            -            -            -            0.969/1.038  -            -            -            -            -            -            0.969/1.038  -            -            -            -          
+QCDscale_VV             lnN                  -            -            -            -            -            0.938/1.067  -            -            -            -            -            -            0.938/1.067  -            -            -            -            -            -            0.938/1.067  -          
+QCDscale_ggHH           lnN                  0.940/1.040  0.940/1.040  -            -            -            -            -            0.940/1.040  0.940/1.040  -            -            -            -            -            -            -            -            -            -            -            -          
+QCDscale_ttbar          lnN                  -            -            -            -            0.947/1.054  -            -            -            -            -            -            0.947/1.054  -            -            -            -            -            -            0.947/1.054  -            -          
+lumi_13TeV              lnN                  1.026        1.026        1.026        -            1.026        1.026        -            1.026        1.026        1.026        -            1.026        1.026        -            1.026        1.026        1.026        -            1.026        1.026        -          
+pdf_gg                  lnN                  1.18         1.18         -            -            -            -            -            1.18         1.18         -            -            -            -            -            -            -            -            -            -            -            -          
+pdf_qqbar               lnN                  -            -            1.023        -            1.01         1.01         -            -            -            1.023        -            1.01         1.01         -            -            -            1.023        -            1.01         1.01         -          
+DY_DataDrivenSF  rateParam CRDY DY 1  
+TT_DataDrivenSF  rateParam SR TT 1  
+DY_DataDrivenSF  rateParam CRTT DY 1  
+DY_DataDrivenSF  rateParam SR DY 1  
+TT_DataDrivenSF  rateParam CRTT TT 1  
+TT_DataDrivenSF  rateParam CRDY TT 1  

@@ -1,0 +1,5 @@
+text2workspace.py combinedCard_300.txt -m 300
+combineTool.py -M Impacts -d combinedCard_300.root -m 300 -t -1 --doInitialFit --robustFit 1
+combineTool.py -M Impacts -d combinedCard_300.root -m 300 -t -1 --robustFit 1 --doFits --parallel 16
+combineTool.py -M Impacts -d combinedCard_300.root -m 300 -t -1 -o impacts.json
+plotImpacts.py -i impacts.json -o impacts

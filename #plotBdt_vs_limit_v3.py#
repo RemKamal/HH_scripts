@@ -1,0 +1,540 @@
+≈import numpy as np
+import matplotlib.pyplot as plt
+import pickle
+import ROOT 
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter(depth=6)
+import pandas as pd
+import subprocess
+
+logY = False
+doPlotting = False
+
+dirs = [
+    '1pb_noBDTcut_inCRs_Zm10p10_Hm20p20', '1pb_noBDTcut_inCRs_Zm10p10_Hm30p25',
+    '1pb_noBDTcut_inCRs_Zm15p15_Hm25p20', '1pb_noBDTcut_inCRs_Zm15p15_Hm35p25',                                                                     
+    '1pb_noBDTcut_inCRs_Zm10p10_Hm25p20', '1pb_noBDTcut_inCRs_Zm10p10_Hm35p25',
+    '1pb_noBDTcut_inCRs_Zm15p15_Hm25p25',                                     
+    '1pb_noBDTcut_inCRs_Zm10p10_Hm25p25',
+    '1pb_noBDTcut_inCRs_Zm15p15_Hm20p20', '1pb_noBDTcut_inCRs_Zm15p15_Hm30p25'
+    ]
+
+#curDir = os.getcwd()
+smallest_r_260, smallest_r_270, smallest_r_300, smallest_r_350, smallest_r_400, smallest_r_450, smallest_r_600, smallest_r_650, smallest_r_900, smallest_r_1000 = [],[],[],[],[],[],[],[],[],[]
+r_260, r_270, r_300, r_350, r_400, r_450, r_600, r_650, r_900, r_1000 = 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
+
+for d in dirs:
+
+    with open (d+ '/limits_' + d +'.txt', 'rb') as fp:
+        
+        itemlist = pickle.load(fp)
+
+
+        twosigmaDown = []
+        onesigmaDown = []
+        medians = []
+        onesigmaUp = []
+        twosigmaUp = []
+        bdtCuts = []
+        
+        if itemlist:
+            print 'itemlist is :'
+            pp.pprint(itemlist)
+            print itemlist
+            print 'len(itemlist) is', len(itemlist)
+
+            mass = 0
+            workingmass260, workingmass270, workingmass300, workingmass350, workingmass400 = None, None, None, None, None
+            workingmass450, workingmass600, workingmass650, workingmass900, workingmass1000 = None, None, None, None, None
+            lims260, lims270, lims300, lims350, lims400 = [], [], [], [], []
+            lims450, lims600, lims650, lims900, lims1000 = [], [], [], [], []
+            
+
+            onesigmaDown260, medians260, onesigmaUp260, bdtCuts260 = [], [], [], []
+            onesigmaDown270, medians270, onesigmaUp270, bdtCuts270 = [], [], [], []
+            onesigmaDown300, medians300, onesigmaUp300, bdtCuts300 = [], [], [], [] 
+            onesigmaDown350, medians350, onesigmaUp350, bdtCuts350 = [], [], [], []
+            onesigmaDown400, medians400, onesigmaUp400, bdtCuts400 = [], [], [], []
+
+            onesigmaDown450, medians450, onesigmaUp450, bdtCuts450 = [], [], [], []  
+            onesigmaDown600, medians600, onesigmaUp600, bdtCuts600 = [], [], [], []
+            onesigmaDown650, medians650, onesigmaUp650, bdtCuts650 = [], [], [], []
+            onesigmaDown900, medians900, onesigmaUp900, bdtCuts900 = [], [], [], []
+            onesigmaDown1000, medians1000, onesigmaUp1000, bdtCuts1000 = [], [], [], []
+
+    
+            for item in itemlist:
+                lims, mass, bdtCut = item
+                if 'H' in bdtCut: continue
+                
+                mass = int(mass)
+                print '*'*50
+                print 'item is ', item
+                print 'lims = {0}, mass = {1}, bdtCut = {2}'.format(lims, mass, bdtCut)
+
+                if mass == 260:
+                    if len(lims) < 4: continue
+                    lims260.append (lims)
+                    if not workingmass260:
+                        workingmass260 = mass
+                #twosigmaDown.append(float(lims[-5]))
+                    onesigmaDown260.append(float(lims[-4]))
+                    medians260.append(float(lims[-3]))
+                    onesigmaUp260.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))
+                    bdtCuts260.append(float(bdtCut))
+                    if r_260 > float(lims[-3]) : 
+                        r_260 = float(lims[-3])
+                        smallest_r_260.append([workingmass260, bdtCut, d, r_260])
+
+                elif mass == 270:
+                    if len(lims) < 4: continue
+                    lims270.append (lims)
+                    if not workingmass270:
+                        workingmass270 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                    onesigmaDown270.append(float(lims[-4]))
+                    medians270.append(float(lims[-3]))
+                    onesigmaUp270.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                              
+                    bdtCuts270.append(float(bdtCut))
+                    if r_270 > float(lims[-3]) :
+                        r_270 = float(lims[-3])
+                        smallest_r_270.append([workingmass270, bdtCut, d, r_270])
+
+                elif mass == 300:
+                    if len(lims) > 4:
+                        print 'item in 300 after checking length', item
+                        lims300.append (lims)
+                        if not workingmass300:
+                            workingmass300 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown300.append(float(lims[-4]))
+                        medians300.append(float(lims[-3]))
+                        onesigmaUp300.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                        
+                        bdtCuts300.append(float(bdtCut))
+                        if r_300 > float(lims[-3]) :
+                            r_300 = float(lims[-3])
+                            smallest_r_300.append([workingmass300, bdtCut, d, r_300])
+                        
+                elif mass == 350:
+                    if len(lims) > 4:
+                        print 'item in 350 after checking length', item
+                        lims350.append (lims)
+                        if not workingmass350:
+                            workingmass350 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown350.append(float(lims[-4]))
+                        medians350.append(float(lims[-3]))
+                        onesigmaUp350.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                                 
+                        bdtCuts350.append(float(bdtCut))
+                        if r_350 > float(lims[-3]) :
+                            r_350 = float(lims[-3])
+                            smallest_r_350.append([workingmass350, bdtCut, d, r_350])
+
+                elif mass == 400:
+                    if len(lims) < 4: continue
+                    lims400.append (lims)
+                    if not workingmass400:
+                        workingmass400 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                    onesigmaDown400.append(float(lims[-4]))
+                    medians400.append(float(lims[-3]))
+                    onesigmaUp400.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                              
+                    bdtCuts400.append(float(bdtCut))
+                    if r_400 > float(lims[-3]) :
+                        r_400 = float(lims[-3])
+                        smallest_r_400.append([workingmass400, bdtCut, d, r_400])
+
+                elif mass == 450:
+                    if len(lims) < 4: continue
+                    lims450.append (lims)
+                    if not workingmass450:
+                        workingmass450 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                    onesigmaDown450.append(float(lims[-4]))
+                    medians450.append(float(lims[-3]))
+                    onesigmaUp450.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                              
+                    bdtCuts450.append(float(bdtCut))
+                    if r_450 > float(lims[-3]) :
+                        r_450 = float(lims[-3])
+                        smallest_r_450.append([workingmass450, bdtCut, d, r_450])
+
+                elif mass == 600:
+                    if len(lims) > 4:
+                        print 'item in 600 after checking length', item
+                        lims600.append (lims)
+                        if not workingmass600:
+                            workingmass600 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown600.append(float(lims[-4]))
+                        medians600.append(float(lims[-3]))
+                        onesigmaUp600.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                                 
+                        bdtCuts600.append(float(bdtCut))
+                        if r_600 > float(lims[-3]) :
+                            r_600 = float(lims[-3])
+                            smallest_r_600.append([workingmass600, bdtCut, d, r_600])
+
+                elif mass == 650:
+                    if len(lims) > 4:
+                        print 'item in 650 after checking length', item
+                        lims650.append (lims)
+                        if not workingmass650:
+                            workingmass650 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown650.append(float(lims[-4]))
+                        medians650.append(float(lims[-3]))
+                        onesigmaUp650.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                        
+                        bdtCuts650.append(float(bdtCut))
+                        if r_650 > float(lims[-3]) :
+                            r_650 = float(lims[-3])
+                            smallest_r_650.append([workingmass650, bdtCut, d, r_650])
+
+                elif mass == 900:
+                    if len(lims) > 4:
+                        print 'item in 900 after checking length', item
+                        lims900.append (lims)
+                        if not workingmass900:
+                            workingmass900 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown900.append(float(lims[-4]))
+                        medians900.append(float(lims[-3]))
+                        onesigmaUp900.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                                 
+                        bdtCuts900.append(float(bdtCut))
+                        if r_900 > float(lims[-3]) :
+                            r_900 = float(lims[-3])
+                            smallest_r_900.append([workingmass900, bdtCut, d, r_900])
+
+                elif mass == 1000:
+                    if len(lims) > 4:
+                        lims1000.append (lims)
+                        if not workingmass1000:
+                            workingmass1000 = mass
+                #twosigmaDown.append(float(lims[-5]))                           
+                        onesigmaDown1000.append(float(lims[-4]))
+                        medians1000.append(float(lims[-3]))
+                        onesigmaUp1000.append(float(lims[-2]))
+                #twosigmaUp.append(float(lims[-1]))                              
+                        bdtCuts1000.append(float(bdtCut))
+                        if r_1000 > float(lims[-3]) :
+                            r_1000 = float(lims[-3])
+                            smallest_r_1000.append([workingmass1000, bdtCut, d, r_1000])
+                else:
+                    print 'cant happen'
+                    sys.exit(1)
+        # workingmass = mass # to keep the mass of interest, 
+        # twosigmaDown.append(float(lims[-5]))
+        # onesigmaDown.append(float(lims[-4]))
+        # medians.append(float(lims[-3]))
+        # onesigmaUp.append(float(lims[-2]))
+        # twosigmaUp.append(float(lims[-1]))
+        # bdtCuts.append(float(bdtCut))
+
+
+# print    lims260, lims400, lims650, lims900 
+# print    '='*50
+# print    onesigmaDown260
+# print    medians260
+# print    onesigmaUp260
+# print    bdtCuts260
+# print    '-'*50
+# print    workingmass400
+# print    onesigmaDown400
+# print    medians400
+# print    onesigmaUp400
+# print    bdtCuts400 
+# print    '-'*50
+# print    workingmass650
+# print    onesigmaDown650
+# print    medians650
+# print    onesigmaUp650
+# print    bdtCuts650 
+# print    '-'*50
+# print    workingmass900
+# print    onesigmaDown900
+# print    medians900
+# print    onesigmaUp900
+# print    bdtCuts900 
+# print    '-'*50
+
+
+
+
+        
+        if doPlotting:
+
+            for m, sido, me, siup, bdt in [ [workingmass260,onesigmaDown260,medians260,onesigmaUp260,bdtCuts260], 
+                                            [workingmass270,onesigmaDown270,medians270,onesigmaUp270,bdtCuts270],
+                                            [workingmass300,onesigmaDown300,medians300,onesigmaUp300,bdtCuts300],
+                                            [workingmass350,onesigmaDown350,medians350,onesigmaUp350,bdtCuts350],
+                                            [workingmass400,onesigmaDown400,medians400,onesigmaUp400,bdtCuts400], 
+                                            
+                                            [workingmass450,onesigmaDown450,medians450,onesigmaUp450,bdtCuts450], 
+                                            [workingmass600,onesigmaDown600,medians600,onesigmaUp600,bdtCuts600], 
+                                            [workingmass650,onesigmaDown650,medians650,onesigmaUp650,bdtCuts650], 
+                                            [workingmass900,onesigmaDown900,medians900,onesigmaUp900,bdtCuts900],
+                                            [workingmass1000,onesigmaDown1000,medians1000,onesigmaUp1000,bdtCuts1000]
+                                            ]:
+    #print m, sido, me, siup, bdt
+
+                x = np.asarray(bdt)
+                y = np.asarray(me)
+        #yerr = np.asarray([onesigmaDown, onesigmaUp])
+        #yerr = np.asarray()
+                yerr_p = np.asarray(siup)
+                yerr_m = np.asarray(sido)
+
+        #xerr = np.zeros(len(x))
+                xerr_p = np.zeros(len(x))
+                xerr_m = np.zeros(len(x))
+
+                c1 = ROOT.TCanvas("c1","Graph with asymmetric error bars",200,10,700,500)
+                c1.SetFillColor(0)
+                c1.SetGrid()
+                c1.GetFrame().SetFillColor(21)
+                c1.GetFrame().SetBorderSize(12)
+                gr = ROOT.TGraphAsymmErrors(len(x), x, y, xerr_m, xerr_p, yerr_m, yerr_p)
+
+                gr.SetTitle('bbVV, Xsec 1pb, mass = {0}GeV'.format(m))
+        #latex = ROOT.TLatex()
+        #latex.SetTextSize(0.025)
+        #latex.SetTextAlign(13) #align at top
+        #latex.DrawLatex(.2,.8,'Xsec 1pb x BR_{ZZ}, mass =' +  '{0}GeV'.format(m) )
+        #pt = ROOT.TPaveText(.1,.1,.9,.9)
+        #pt.AddText(.2,.8,'Xsec 1pb x BR_{ZZ}, mass =' +  '{0}GeV'.format(m) )
+        
+                gr.GetYaxis().SetTitle("'r' from 'Combine'")
+        
+                gr.GetXaxis().SetTitle("Cut on BDT value")
+                if logY:
+                    ROOT.gPad.SetLogy()
+
+                gr.SetMarkerColor(4)
+                gr.SetMarkerStyle(21)
+                gr.Draw("AP")
+                for ext in ['png', 'pdf', 'root']:
+                    c1.SaveAs('gr_limits_{0}_{1}GeV.{2}'.format(d, m, ext))
+
+
+
+
+list_of_r = [smallest_r_260, smallest_r_270, smallest_r_300, smallest_r_350, smallest_r_400, smallest_r_450, smallest_r_600, smallest_r_650, smallest_r_900, smallest_r_1000]
+
+
+for r_list in list_of_r:
+    pp.pprint(r_list)
+    print '-'*50
+
+lowest_r_values = [r[-1] for r in list_of_r]
+
+final_r_values_list = []
+for l in lowest_r_values:
+    final_r_values_list.append([l[0], l[1], l[2][19:] , l[3]]) 
+
+print final_r_values_list
+mdf = pd.DataFrame(final_r_values_list,columns=['Mass', 'BDTCut', 'Directory', 'r-value'])#.set_index('Country') 
+print mdf
+
+mdf.to_html('myDF.html')
+#then go online and use :  http://html2pdf.com/
+
+
+with open('tot_df_limits.txt', 'wb') as fp:
+    pickle.dump(list_of_r, fp)
+
+print '~|'*200
+with open('tot_df_limits.txt', 'r') as fr:
+    itemlist = pickle.load(fr)  
+    pp.pprint(itemlist)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#mdf.to_html('table.html')
+#subprocess.call('wkhtmltoimage -f png --width 0 table.html table.png', shell=True)
+
+#ax = mdf.plot()
+#fig = ax.get_figure()
+#fig.savefig('asdf.png')
+
+
+# from matplotlib.backends.backend_pdf import PdfPages
+# import matplotlib.pyplot as plt
+
+# from PySide.QtGui import QImage
+# from PySide.QtGui import QPainter
+# from PySide.QtCore import QSize
+# from PySide.QtWebKit import QWebPage
+
+# #arrays = [np.hstack([ ['one']*3, ['two']*3]), ['Dog', 'Bird', 'Cat']*2]
+# #columns = pd.MultiIndex.from_arrays(arrays, names=['foo', 'bar'])
+# #df =pd.DataFrame(np.zeros((3,6)),columns=columns,index=pd.date_range('20000103',periods=3))
+
+# h = "<!DOCTYPE html> <html> <body> <p> " + mdf.to_html() + " </p> </body> </html>";
+# page = QWebPage()
+# page.setViewportSize(QSize(5000,5000))
+
+# frame = page.mainFrame()
+# frame.setHtml(h, "text/html")
+
+# img = QImage(1000,700, QImage.Format(5))
+# painter = QPainter(img)
+# frame.render(painter)
+# painter.end()
+# a = img.save("html.png")
+
+
+
+
+# import matplotlib.pyplot as plt
+# from pandas.tools.plotting import table
+
+# ax = plt.subplot(111, frame_on=False) # no visible frame
+# ax.xaxis.set_visible(False)  # hide the x axis
+# ax.yaxis.set_visible(False)  # hide the y axis
+
+# table(ax, mdf)  # where df is your data frame
+
+# plt.savefig('mytable.png')
+
+
+# fig, ax = plt.subplots()
+# ax.errorbar(x, y, yerr, fmt='o') #, xerr)
+# plt.show()
+
+
+# plt.savefig('limits_vs_bdt.png')
+# plt.savefig('limits_vs_bdt.pdf')
+
+
+# def PlotDataPoints(config,pars):
+#     """Collect the data points/UL and generate a TGraph for the points
+#     and a list of TArrow for the UL. All is SED format"""
+  
+#     #Preparation + declaration of arrays
+#     arrows = []
+#     NEbin = int(config['Ebin']['NumEnergyBins'])
+#     lEmax = np.log10(float(config['energy']['emax']))
+#     lEmin = np.log10(float(config['energy']['emin']))
+#     Epoint = np.zeros(NEbin)
+#     EpointErrp = np.zeros(NEbin)
+#     EpointErrm = np.zeros(NEbin)
+#     Fluxpoint = np.zeros(NEbin)
+#     FluxpointErrp = np.zeros(NEbin)
+#     FluxpointErrm = np.zeros(NEbin)
+#     ener = np.logspace(lEmin, lEmax, NEbin + 1)
+  
+#     print "Save Ebin results in ",pars.PlotName+".Ebin.dat"
+#     dumpfile = open(pars.PlotName+".Ebin.dat",'w')
+#     dumpfile.write("# Energy (MeV)\tEmin (MeV)\tEmax (MeV)\tE**2. dN/dE (erg.cm-2s-1)\tGaussianError\tMinosNegativeError\tMinosPositiveError\n")
+  
+#     from enrico.constants import EbinPath
+#     for i in xrange(NEbin):#Loop over the energy bins
+#         E = int(pow(10, (np.log10(ener[i + 1]) + np.log10(ener[i])) / 2))
+#         filename = (config['out'] + '/'+EbinPath+str(NEbin)+'/' + config['target']['name'] +
+#                     "_" + str(i) + ".conf")
+#         try:#read the config file of each data points
+#             CurConf = get_config(filename)
+#             print "Reading ",filename
+#             results = utils.ReadResult(CurConf)
+#         except:
+#             print "cannot read the Results of energy ", E
+#             continue
+#         #fill the energy arrays
+#         Epoint[i] = E
+#         EpointErrm[i] = E - results.get("Emin")
+#         EpointErrp[i] = results.get("Emax") - E
+#         dprefactor = 0
+  
+#         #Compute the flux or the UL (in SED format)
+#         if results.has_key('Ulvalue'):
+#             PrefUl = utils.Prefactor(results.get("Ulvalue"),results.get("Index"),
+#                                     results.get("Emin"),results.get("Emax"),E)
+#             Fluxpoint[i] = MEV_TO_ERG  * PrefUl * Epoint[i] ** 2
+#             arrows.append(ROOT.TArrow(Epoint[i], Fluxpoint[i], Epoint[i],
+#                                      Fluxpoint[i] * 0.5, 0.02, "|>"))
+#         else : #Not an UL : compute points + errors
+#             Fluxpoint[i] = MEV_TO_ERG  * results.get("Prefactor") * Epoint[i] ** 2
+#             dprefactor = results.get("dPrefactor")
+#             try:
+#                 down = abs(results.get("dPrefactor-"))
+#                 up = results.get("dPrefactor+")
+#                 if down==0 or  up ==0 :
+#                   raise RuntimeError("cannot get Error value")
+#                 FluxpointErrp[i] = MEV_TO_ERG  * up * Epoint[i] ** 2
+#                 FluxpointErrm[i] = MEV_TO_ERG  * down * Epoint[i] ** 2
+#             except:
+#                 try:
+#                     err = MEV_TO_ERG  * dprefactor * Epoint[i] ** 2
+#                     FluxpointErrp[i] = err
+#                     FluxpointErrm[i] = err
+#                 except:
+#                     pass
+#         print "Energy = ",Epoint[i]
+#         print "E**2. dN/dE = ",Fluxpoint[i]," + ",FluxpointErrp[i]," - ",FluxpointErrm[i]
+  
+#         #Save the data point in a ascii file
+#         dumpfile.write(str(Epoint[i])+"\t"+str(results.get("Emin"))+"\t"+str( results.get("Emax"))+"\t"+str(Fluxpoint[i])+"\t"+str( MEV_TO_ERG  * dprefactor * Epoint[i] ** 2)+"\t"+str(FluxpointErrm[i])+"\t"+str(FluxpointErrp[i])+"\n")
+#     #create a TGraph for the points
+#     tgpoint = ROOT.TGraphAsymmErrors(NEbin, Epoint, Fluxpoint, EpointErrm,
+#                                      EpointErrp, FluxpointErrm, FluxpointErrp)
+#     tgpoint.SetMarkerStyle(20)
+#     dumpfile.close()
+#     return tgpoint, arrows
+
+
+
+
+
+
+# # Create some fake data
+# xvalue = np.linspace(1,100,100)
+# pop_mean = xvalue
+# walker_pos = pop_mean + 10*np.random.randn(100)
+
+# # Do the plot
+# fig, ax = plt.subplots()
+
+# # Save the output of 'plot', as we need it later
+# lwalker, = ax.plot(xvalue, walker_pos, 'b-')
+
+# # Save output of 'fill_between' (note there's no comma here)
+# lsigma = ax.fill_between(xvalue, pop_mean+10, pop_mean-10, color='yellow', alpha=0.5)
+
+# # Save the output of 'plot', as we need it later
+# lmean, = ax.plot(xvalue, pop_mean, 'k--')
+
+# # Create the legend, combining the yellow rectangle for the 
+# # uncertainty and the 'mean line'  as a single item
+# ax.legend([lwalker, (lsigma, lmean)], ["Walker position", "Mean + 1sigma range"], loc=2)
+
+# fig.savefig("legend_example.png")
+# plt.show()
+
+
